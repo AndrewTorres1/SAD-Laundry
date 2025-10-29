@@ -1,0 +1,133 @@
+body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  background: #e0f7fa; /* Light blue background */
+}
+
+.login-container, .login-form {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.login-form {
+  background: #ffffff;
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  width: 350px;
+}
+
+.login-form h2 {
+  color: #0288d1;
+}
+
+.login-form input {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border: 2px solid #00bcd4;
+  border-radius: 8px;
+  outline: none;
+}
+
+.login-form button {
+  background-color: #00bcd4;
+  color: white;
+  border: none;
+  padding: 10px 0;
+  border-radius: 8px;
+  width: 100%;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.login-form button:hover {
+  background-color: #0288d1;
+}
+
+.dashboard {
+  display: flex;
+  height: 100vh;
+}
+
+.sidebar {
+  width: 220px;
+  background-color: #0288d1;
+  color: white;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  border-radius: 0 15px 15px 0;
+}
+
+.sidebar button {
+  background-color: transparent;
+  border: none;
+  color: white;
+  padding: 12px;
+  border-radius: 10px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.sidebar button.active, .sidebar button:hover {
+  background-color: #00bcd4;
+}
+
+.main-content {
+  flex: 1;
+  padding: 30px;
+  overflow-y: auto;
+}
+
+.card {
+  background: #ffffff;
+  padding: 15px;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  margin-bottom: 20px;
+}
+
+.status-badge {
+  padding: 5px 10px;
+  border-radius: 20px;
+  color: white;
+  font-weight: bold;
+  font-size: 0.9rem;
+}
+
+.status-Pending { background-color: #ffa000; }
+.status-Accepted { background-color: #43a047; }
+.status-Finished { background-color: #43a047; }
+.status-In\ Delivery { background-color: #0288d1; }
+.status-Delivered { background-color: #43a047; }
+.status-Declined { background-color: #e53935; }
+
+input[type="date"], input[type="time"], input[type="text"], select {
+  padding: 10px;
+  border-radius: 10px;
+  border: 2px solid #00bcd4;
+  outline: none;
+  margin-right: 10px;
+}
+
+button {
+  cursor: pointer;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+table th, table td {
+  padding: 12px;
+  text-align: center;
+}
+
+table tr:nth-child(even) {
+  background-color: #f0f4f8;
+}
