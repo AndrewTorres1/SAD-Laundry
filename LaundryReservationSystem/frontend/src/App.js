@@ -1,12 +1,15 @@
 import React, { useState } from "react";
 import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation, Link } from "react-router-dom";
 import "./App.css";
+import laundryBackground from "./assets/laundry.jpg";
+import Sidebar from "./Sidebar";
 
 // Initial users
 const initialUsers = [
   { username: "admin", password: "12345", role: "admin" },
 ];
 
+// Login Component
 function Login({ users }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -51,6 +54,7 @@ function Login({ users }) {
   );
 }
 
+// Register Component
 function Register({ users, setUsers }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -96,6 +100,7 @@ function Register({ users, setUsers }) {
   );
 }
 
+// Dashboard Component with collapsible sidebar
 function Dashboard({ reservations, setReservations }) {
   const navigate = useNavigate();
   const location = useLocation();
@@ -123,7 +128,7 @@ function Dashboard({ reservations, setReservations }) {
       username,
       status: "Pending",
       laundryStatus: "Pending",
-      deliveryStatus: "Pending" // Default to Pending
+      deliveryStatus: "Pending"
     }]);
     setNewReservation({ date: "", time: "", address: "" });
     alert("Reservation submitted! Waiting for admin approval.");
@@ -134,7 +139,7 @@ function Dashboard({ reservations, setReservations }) {
       case "Pending": return "orange";
       case "Accepted": return "green";
       case "Finished": return "green";
-      case "In Delivery": return "blue"; // Blue for in delivery
+      case "In Delivery": return "blue";
       case "Delivered": return "green";
       case "Declined": return "red";
       default: return "black";
@@ -143,55 +148,46 @@ function Dashboard({ reservations, setReservations }) {
 
   return (
     <div style={{ display: "flex", height: "100vh" }}>
-      {/* Side Panel */}
-      <div style={{
-        width: "200px",
-        backgroundColor: "#2c3e50",
-        color: "white",
-        padding: "20px",
-        display: "flex",
-        flexDirection: "column",
-        gap: "20px"
-      }}>
-        <h3>Dashboard</h3>
-        {role === "admin" ? (
-          <>
-            <button onClick={() => setActiveTab("Reservations")} style={tabButtonStyle(activeTab === "Reservations")}>Reservations</button>
-            <button onClick={() => setActiveTab("Laundry")} style={tabButtonStyle(activeTab === "Laundry")}>Laundry Status</button>
-            <button onClick={() => setActiveTab("Delivery")} style={tabButtonStyle(activeTab === "Delivery")}>Delivery Status</button>
-          </>
-        ) : (
-          <button onClick={() => setActiveTab("Reservation")} style={tabButtonStyle(true)}>Reserve Laundry</button>
-        )}
-        <button onClick={handleLogout} style={{ marginTop: "auto", backgroundColor: "#e74c3c" }}>Logout</button>
-      </div>
+      {/* Collapsible Sidebar */}
+      <Sidebar
+        role={role}
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        handleLogout={handleLogout}
+      />
 
       {/* Main Content */}
       <div style={{ flex: 1, padding: "20px", overflowY: "auto" }}>
-        <h2>Welcome {username}!</h2>
+        <div style={{
+          backgroundColor: "rgba(255, 255, 255, 0.95)",
+          padding: "20px",
+          borderRadius: "8px"
+        }}>
+          <h2>Welcome {username}!</h2>
 
-        {/* Admin Tabs */}
-        {role === "admin" && activeTab === "Reservations" && (
-          <AdminReservations reservations={reservations} handleStatusChange={handleStatusChange} deleteItem={deleteItem} getStatusColor={getStatusColor} />
-        )}
-        {role === "admin" && activeTab === "Laundry" && (
-          <AdminLaundry reservations={reservations} handleStatusChange={handleStatusChange} deleteItem={deleteItem} getStatusColor={getStatusColor} />
-        )}
-        {role === "admin" && activeTab === "Delivery" && (
-          <AdminDelivery reservations={reservations} handleStatusChange={handleStatusChange} deleteItem={deleteItem} getStatusColor={getStatusColor} />
-        )}
+          {/* Admin Tabs */}
+          {role === "admin" && activeTab === "Reservations" && (
+            <AdminReservations reservations={reservations} handleStatusChange={handleStatusChange} deleteItem={deleteItem} getStatusColor={getStatusColor} />
+          )}
+          {role === "admin" && activeTab === "Laundry" && (
+            <AdminLaundry reservations={reservations} handleStatusChange={handleStatusChange} deleteItem={deleteItem} getStatusColor={getStatusColor} />
+          )}
+          {role === "admin" && activeTab === "Delivery" && (
+            <AdminDelivery reservations={reservations} handleStatusChange={handleStatusChange} deleteItem={deleteItem} getStatusColor={getStatusColor} />
+          )}
 
-        {/* Customer Reservation */}
-        {role === "customer" && (
-          <CustomerDashboard
-            username={username}
-            newReservation={newReservation}
-            setNewReservation={setNewReservation}
-            addReservation={addReservation}
-            reservations={reservations}
-            getStatusColor={getStatusColor}
-          />
-        )}
+          {/* Customer Reservation */}
+          {role === "customer" && activeTab === "Reservation" && (
+            <CustomerDashboard
+              username={username}
+              newReservation={newReservation}
+              setNewReservation={setNewReservation}
+              addReservation={addReservation}
+              reservations={reservations}
+              getStatusColor={getStatusColor}
+            />
+          )}
+        </div>
       </div>
     </div>
   );
@@ -204,7 +200,12 @@ function AdminReservations({ reservations, handleStatusChange, deleteItem, getSt
       <h3>Customer Reservations</h3>
       {reservations.length === 0 && <p>No reservations yet.</p>}
       {reservations.length > 0 && (
-        <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "center" }}>
+        <table style={{
+          width: "100%",
+          borderCollapse: "collapse",
+          textAlign: "center",
+          backgroundColor: "white"
+        }}>
           <thead>
             <tr>
               <th>Date</th>
@@ -245,7 +246,7 @@ function AdminLaundry({ reservations, handleStatusChange, deleteItem, getStatusC
       <h3>Laundry Status</h3>
       {accepted.length === 0 && <p>No accepted reservations yet.</p>}
       {accepted.length > 0 && (
-        <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "center" }}>
+        <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "center", backgroundColor: "white" }}>
           <thead>
             <tr>
               <th>Date</th>
@@ -285,14 +286,13 @@ function AdminDelivery({ reservations, handleStatusChange, deleteItem, getStatus
       <h3>Delivery Status</h3>
       {finished.length === 0 && <p>No finished laundry yet.</p>}
       {finished.length > 0 && (
-        <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "center" }}>
+        <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "center", backgroundColor: "white" }}>
           <thead>
             <tr>
               <th>Date</th>
               <th>Time</th>
               <th>Username</th>
               <th>Delivery Status</th>
-              <th>Address</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -303,10 +303,8 @@ function AdminDelivery({ reservations, handleStatusChange, deleteItem, getStatus
                 <td>{r.time}</td>
                 <td>{r.username}</td>
                 <td style={{ color: getStatusColor(r.deliveryStatus), fontWeight: "bold" }}>{r.deliveryStatus}</td>
-                <td>{r.address}</td>
                 <td>
                   <select value={r.deliveryStatus} onChange={(e) => handleStatusChange(r.id, "deliveryStatus", e.target.value)}>
-                    <option value="Pending">Pending</option> {/* Added */}
                     <option value="In Delivery">In Delivery</option>
                     <option value="Delivered">Delivered</option>
                   </select>
@@ -321,29 +319,29 @@ function AdminDelivery({ reservations, handleStatusChange, deleteItem, getStatus
   );
 }
 
-// Customer Component
+// Customer Dashboard
 function CustomerDashboard({ username, newReservation, setNewReservation, addReservation, reservations, getStatusColor }) {
   const userReservations = reservations.filter(r => r.username === username);
   return (
     <div>
       <h3>Make a Reservation</h3>
-      <input type="date" value={newReservation.date} onChange={e => setNewReservation({ ...newReservation, date: e.target.value })} />
-      <input type="time" value={newReservation.time} onChange={e => setNewReservation({ ...newReservation, time: e.target.value })} />
-      <input type="text" placeholder="Delivery Address" value={newReservation.address} onChange={e => setNewReservation({ ...newReservation, address: e.target.value })} />
-      <button onClick={addReservation}>Submit Reservation</button>
-
-      <h3 style={{ marginTop: "20px" }}>Your Laundry Status</h3>
+      <div style={{ marginBottom: "20px" }}>
+        <input type="date" value={newReservation.date} onChange={(e) => setNewReservation({ ...newReservation, date: e.target.value })} />
+        <input type="time" value={newReservation.time} onChange={(e) => setNewReservation({ ...newReservation, time: e.target.value })} />
+        <input type="text" placeholder="Address" value={newReservation.address} onChange={(e) => setNewReservation({ ...newReservation, address: e.target.value })} />
+        <button onClick={addReservation}>Submit</button>
+      </div>
+      <h3>Your Reservations</h3>
       {userReservations.length === 0 && <p>No reservations yet.</p>}
       {userReservations.length > 0 && (
-        <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "center" }}>
+        <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "center", backgroundColor: "white" }}>
           <thead>
             <tr>
               <th>Date</th>
               <th>Time</th>
-              <th>Reservation Status</th>
+              <th>Status</th>
               <th>Laundry Status</th>
               <th>Delivery Status</th>
-              <th>Address</th>
             </tr>
           </thead>
           <tbody>
@@ -354,7 +352,6 @@ function CustomerDashboard({ username, newReservation, setNewReservation, addRes
                 <td style={{ color: getStatusColor(r.status), fontWeight: "bold" }}>{r.status}</td>
                 <td style={{ color: getStatusColor(r.laundryStatus), fontWeight: "bold" }}>{r.laundryStatus}</td>
                 <td style={{ color: getStatusColor(r.deliveryStatus), fontWeight: "bold" }}>{r.deliveryStatus}</td>
-                <td>{r.address}</td>
               </tr>
             ))}
           </tbody>
@@ -364,37 +361,28 @@ function CustomerDashboard({ username, newReservation, setNewReservation, addRes
   );
 }
 
-// Styles
-const tabButtonStyle = (active) => ({
-  backgroundColor: active ? "#34495e" : "transparent",
-  color: "white",
-  border: "none",
-  padding: "10px",
-  textAlign: "left",
-  cursor: "pointer"
-});
+const deleteButtonStyle = { marginLeft: "10px", color: "white", backgroundColor: "red", border: "none", padding: "3px 8px", cursor: "pointer" };
 
-const deleteButtonStyle = {
-  marginLeft: "5px",
-  backgroundColor: "#e74c3c",
-  color: "white",
-  border: "none",
-  padding: "5px",
-  cursor: "pointer"
-};
-
-// App
+// Main App
 function App() {
   const [users, setUsers] = useState(initialUsers);
   const [reservations, setReservations] = useState([]);
 
   return (
     <Router>
-      <Routes>
-        <Route path="/" element={<Login users={users} />} />
-        <Route path="/register" element={<Register users={users} setUsers={setUsers} />} />
-        <Route path="/dashboard" element={<Dashboard reservations={reservations} setReservations={setReservations} />} />
-      </Routes>
+      <div style={{
+        backgroundImage: `url(${laundryBackground})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        minHeight: "100vh",
+        filter: "brightness(1)" // fades background
+      }}>
+        <Routes>
+          <Route path="/" element={<Login users={users} />} />
+          <Route path="/register" element={<Register users={users} setUsers={setUsers} />} />
+          <Route path="/dashboard" element={<Dashboard reservations={reservations} setReservations={setReservations} />} />
+        </Routes>
+      </div>
     </Router>
   );
 }
