@@ -3,6 +3,7 @@ import React, { useState } from "react";
 const Sidebar = ({ role, activeTab, setActiveTab, handleLogout }) => {
   const [expanded, setExpanded] = useState(false);
 
+  // Tabs for admin
   const adminTabs = [
     { key: "Reservations", label: "Reservations" },
     { key: "Laundry", label: "Laundry Status" },
@@ -12,7 +13,7 @@ const Sidebar = ({ role, activeTab, setActiveTab, handleLogout }) => {
   const toggleSidebar = () => setExpanded(!expanded);
 
   const sidebarStyle = {
-    width: expanded ? "220px" : "60px",
+    width: expanded ? "200px" : "60px",
     backgroundColor: "#2c3e50",
     color: "white",
     display: "flex",
@@ -38,6 +39,7 @@ const Sidebar = ({ role, activeTab, setActiveTab, handleLogout }) => {
 
   return (
     <div style={sidebarStyle}>
+      {/* Toggle button */}
       <button
         onClick={toggleSidebar}
         style={{
@@ -52,6 +54,7 @@ const Sidebar = ({ role, activeTab, setActiveTab, handleLogout }) => {
         {expanded ? "☰ Close" : "☰"}
       </button>
 
+      {/* Tabs based on role */}
       {role === "admin"
         ? adminTabs.map((tab) => (
             <button
@@ -71,16 +74,29 @@ const Sidebar = ({ role, activeTab, setActiveTab, handleLogout }) => {
           </button>
         )}
 
+      {/* ✅ About Us Button - just above Logout */}
+      <button
+        style={{
+          ...buttonStyle("About Us"),
+          marginTop: "auto",
+          backgroundColor: activeTab === "About Us" ? "#34495e" : "transparent",
+        }}
+        onClick={() => setActiveTab("About Us")}
+      >
+        {expanded ? "About Us" : "About"}
+      </button>
+
+      {/* Logout Button */}
       <button
         onClick={handleLogout}
         style={{
-          marginTop: "auto",
           backgroundColor: "#e74c3c",
           color: "white",
           border: "none",
           padding: "10px",
           cursor: "pointer",
           textAlign: expanded ? "left" : "center",
+          marginTop: "5px",
         }}
       >
         {expanded ? "Logout" : "L"}
